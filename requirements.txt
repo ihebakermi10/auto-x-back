@@ -1,0 +1,12 @@
+python-dotenv
+crewai
+pandas
+langchain-groq
+groq
+crewai_tools
+pydantic
+tweepy
+langchain
+requests
+groq
+schedule
