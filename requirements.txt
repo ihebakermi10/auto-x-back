@@ -10,3 +10,4 @@ langchain
 requests
 groq
 schedule
+litellm

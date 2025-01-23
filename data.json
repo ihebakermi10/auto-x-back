@@ -1,0 +1,26 @@
+{
+    "records": [
+        {
+            "id": "rec_1737653999258",
+            "fields": {
+                "mentioned_conversation_tweet_id": "1882478556640313792",
+                "mentioned_conversation_tweet_text": "These Buckeyes went OFF \ud83d\udca5 https://t.co/pn58KoOF61",
+                "tweet_response_id": "1882483430878843251",
+                "tweet_response_text": "Looks like Ohio State's offense is channeling the glory days of the 2002 Buckeyes. Expect a national championship buzz, unless they trip over an old-school flip phone.",
+                "tweet_response_created_at": "2025-01-23T17:39:59.257269",
+                "mentioned_at": "2025-01-23T17:26:53+00:00"
+            }
+        },
+        {
+            "id": "rec_1737654902168",
+            "fields": {
+                "mentioned_conversation_tweet_id": "1876403414617174235",
+                "mentioned_conversation_tweet_text": "\ud83d\udc99 like this post to witness the next evolution of #GalaxyAI\n\nA true AI companion is coming \u2014 are you ready for #GalaxyUnpacked? https://t.co/djbjSNo82Q",
+                "tweet_response_id": "1882487217806831975",
+                "tweet_response_text": "Prepare for a shiny new AI buddy that\u2019ll likely make your old Palm Pilot look like a rock. Just don\u2019t expect it to help you with your existential dread.",
+                "tweet_response_created_at": "2025-01-23T17:55:02.168833",
+                "mentioned_at": "2025-01-23T17:25:52+00:00"
+            }
+        }
+    ]
+}

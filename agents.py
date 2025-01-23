@@ -10,17 +10,19 @@ load_dotenv()
 from crewai_tools import SerperDevTool, WebsiteSearchTool
 from tools.post_tools import PostTools
 
+load_dotenv()
+
 class CreativeSystemAgents:
     def __init__(self):
         self.llm = ChatOpenAIManager().create_llm()
 
     def creative_tweet_agent(self):
         """
-        Cet agent reçoit un 'topic' (ex: "IA dans le marketing"),
-        et génère plusieurs tweets originaux et créatifs en s'appuyant
-        sur les outils de recherche pour enrichir le contenu.
+        This agent receives a 'topic' (e.g., "AI in Marketing"),
+        and generates multiple original and creative tweets by leveraging
+        search tools to enrich the content.
         """
-        # On instancie les outils CrewAI Tools (search, website, etc.)
+        # Instantiate CrewAI Tools (search, website, etc.)
         serper_tool = SerperDevTool(
             api_key=os.getenv("SERPER_API_KEY"), 
             name="SerperDevTool"
@@ -30,19 +32,19 @@ class CreativeSystemAgents:
         return Agent(
             role="Creative Tweet Agent",
             goal=dedent("""\
-                Tu es chargé de créer  tweets sur un thème donné (topic).
-                Ces tweets doivent être : 
-                - Créatifs, originaux, < 280 caractères
-                - Inclure éventuellement des hashtags pertinents
-                - Invoquer des sources, des anecdotes ou des faits intéressants
-                  si cela peut enrichir le contenu
-                - Faire un appel à l'action ou susciter un engagement
+                You are responsible for creating tweet  on a given theme (topic).
+                These tweets should be:
+                - Creative, original, < 280 characters
+                - Optionally include relevant hashtags
+                - Invoke sources, anecdotes, or interesting facts
+                  if they can enrich the content
+                - Make a call to action or encourage engagement
             """),
             backstory=dedent("""\
-                Tu es un agent créatif spécialisé dans la rédaction de tweets.
-                Tu peux utiliser SerperDevTool et WebsiteSearchTool pour te documenter,
-                ou simplement t'appuyer sur ton LLM, afin de proposer des tweets
-                originaux, informatifs et accrocheurs.
+                You are a creative agent specialized in drafting tweets.
+                You can use SerperDevTool and WebsiteSearchTool to research,
+                or simply rely on your LLM, to propose original, informative,
+                and catchy tweets.
             """),
             tools=[
                 serper_tool,
@@ -50,27 +52,25 @@ class CreativeSystemAgents:
             ],
             llm=self.llm,
             verbose=True,
-            
         )
 
     def tweet_poster_agent(self):
         """
-        Cet agent reçoit la liste de tweets finalisés et les poste sur Twitter
-        grâce à l'outil 'Post Tweet' (PostTools.post_tweet).
+        This agent receives the finalized list of tweets and posts them on Twitter
+        using the 'Post Tweet' tool (PostTools.post_tweet).
         """
         return Agent(
             role="Tweet Posting Agent",
             goal=dedent("""\
-                Reçois un  tweets et utilise l'outil 'Post Tweet'
-                afin de les publier. Retourne un message de confirmation pour
-                chaque tweet posté.
+                Receive tweets and use the 'Post Tweet' tool
+                to publish them. Return a confirmation message for
+                each posted tweet.
             """),
             backstory=dedent("""\
-                Tu es l'agent chargé de publier les tweets sur Twitter,
-                sans intervention humaine.
+                You are the agent responsible for publishing tweets on Twitter,
+                without human intervention.
             """),
             tools=[PostTools.post_tweet],
             llm=self.llm,
             verbose=True,
-
         )

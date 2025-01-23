@@ -1,0 +1,115 @@
+<!-- index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Twitter Automation Scheduler</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            padding: 50px;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 500px;
+            margin: auto;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        input, button {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            box-sizing: border-box;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .message {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Schedule a Tweet</h2>
+    <form id="scheduleForm">
+        <label for="topic">Topic:</label>
+        <input type="text" id="topic" name="topic" placeholder="Enter tweet topic" required>
+
+        <label for="heure">Time (HH:MM, 24-hour):</label>
+        <input type="time" id="heure" name="heure" required>
+
+        <button type="submit">Schedule Tweet</button>
+    </form>
+    <div id="message" class="message" style="display: none;"></div>
+</div>
+
+<script>
+    document.getElementById('scheduleForm').addEventListener('submit', async function(e) {
+        e.preventDefault();
+
+        const topic = document.getElementById('topic').value.trim();
+        const heureInput = document.getElementById('heure').value.trim();
+
+        if (!topic || !heureInput) {
+            displayMessage("Please fill in all fields.", "error");
+            return;
+        }
+
+        // Ensure the time is in HH:MM format (24-hour)
+        const heure = heureInput; // The 'time' input type already ensures HH:MM (24-hour)
+
+        try {
+            const response = await fetch('http://127.0.0.1:8001/schedule', {  // Ensure correct port
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ topic, heure }),
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                displayMessage(data.message, "success");
+                document.getElementById('scheduleForm').reset();
+            } else {
+                displayMessage(data.detail || "An error occurred.", "error");
+            }
+        } catch (error) {
+            displayMessage("Failed to connect to the server.", "error");
+            console.error('Error:', error);
+        }
+    });
+
+    function displayMessage(message, type) {
+        const messageDiv = document.getElementById('message');
+        messageDiv.textContent = message;
+        messageDiv.className = `message ${type}`;
+        messageDiv.style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
