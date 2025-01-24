@@ -189,7 +189,6 @@ def job():
     bot.execute_replies()
 
 if __name__ == "__main__":
-    # Programmer la tâche pour qu'elle s'exécute toutes les 6 minutes
     schedule.every(0.1).minutes.do(job)
     while True:
         schedule.run_pending()

@@ -1,10 +1,10 @@
 <!-- index.html -->
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Twitter Automation Scheduler</title>
+    <title>Planificateur de Tweets</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -52,15 +52,12 @@
 <body>
 
 <div class="container">
-    <h2>Schedule a Tweet</h2>
+    <h2>Planifier un Tweet</h2>
     <form id="scheduleForm">
-        <label for="topic">Topic:</label>
-        <input type="text" id="topic" name="topic" placeholder="Enter tweet topic" required>
+        <label for="topic">Sujet :</label>
+        <input type="text" id="topic" name="topic" placeholder="Entrez le sujet du tweet" required>
 
-        <label for="heure">Time (HH:MM, 24-hour):</label>
-        <input type="time" id="heure" name="heure" required>
-
-        <button type="submit">Schedule Tweet</button>
+        <button type="submit">Planifier le Tweet</button>
     </form>
     <div id="message" class="message" style="display: none;"></div>
 </div>
@@ -70,23 +67,19 @@
         e.preventDefault();
 
         const topic = document.getElementById('topic').value.trim();
-        const heureInput = document.getElementById('heure').value.trim();
 
-        if (!topic || !heureInput) {
-            displayMessage("Please fill in all fields.", "error");
+        if (!topic) {
+            displayMessage("Veuillez remplir le champ du sujet.", "error");
             return;
         }
 
-        // Ensure the time is in HH:MM format (24-hour)
-        const heure = heureInput; // The 'time' input type already ensures HH:MM (24-hour)
-
         try {
-            const response = await fetch('http://127.0.0.1:8001/schedule', {  // Ensure correct port
+            const response = await fetch('http://127.0.0.1:8001/schedule', {  // Assurez-vous que le port correspond au backend
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ topic, heure }),
+                body: JSON.stringify({ topic }),
             });
 
             const data = await response.json();
@@ -95,11 +88,11 @@
                 displayMessage(data.message, "success");
                 document.getElementById('scheduleForm').reset();
             } else {
-                displayMessage(data.detail || "An error occurred.", "error");
+                displayMessage(data.detail || "Une erreur est survenue.", "error");
             }
         } catch (error) {
-            displayMessage("Failed to connect to the server.", "error");
-            console.error('Error:', error);
+            displayMessage("Échec de la connexion au serveur.", "error");
+            console.error('Erreur:', error);
         }
     });
 

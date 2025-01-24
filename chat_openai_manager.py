@@ -10,7 +10,7 @@ class ChatOpenAIManager:
         if not self.api_key:
             raise ValueError("OPENAI_API_KEY not found. Please check your .env file.")
 
-    def create_llm(self, temperature=0.2, model="gpt-4o-2024-08-06"):
+    def create_llm(self, temperature=0.2, model="gpt-4o-mini-2024-07-18"):
         """
         Creates and returns a ChatOpenAI LLM instance.
         """

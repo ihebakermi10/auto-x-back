@@ -62,7 +62,7 @@ class CreativeSystemAgents:
         return Agent(
             role="Tweet Posting Agent",
             goal=dedent("""\
-                Receive tweets and use the 'Post Tweet' tool
+                Receive tweet and use the 'Post Tweet' tool
                 to publish them. Return a confirmation message for
                 each posted tweet.
             """),

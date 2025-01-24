@@ -11,3 +11,10 @@ requests
 groq
 schedule
 litellm
+fastapi 
+uvicorn 
+pydantic 
+python-dotenv 
+apscheduler 
+ 
+tweepy 
