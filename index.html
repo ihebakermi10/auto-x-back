@@ -1,10 +1,8 @@
-<!-- index.html -->
-
 <!DOCTYPE html>
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Planificateur de Tweets</title>
+    <title>Planificateur de Tweets (Clés Dynamiques)</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -12,39 +10,38 @@
             padding: 50px;
         }
         .container {
-            background-color: white;
-            padding: 30px;
+            background-color: #fff;
+            padding: 20px;
             border-radius: 8px;
-            max-width: 500px;
+            max-width: 600px;
             margin: auto;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 10px rgba(0,0,0,.1);
         }
         input, button {
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            box-sizing: border-box;
+            padding: 10px;
+            margin: 5px 0;
         }
         button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
+            background: #4CAF50; 
+            color: #fff; 
+            border: none; 
             cursor: pointer;
         }
         button:hover {
-            background-color: #45a049;
+            background: #45a049;
         }
         .message {
-            margin-top: 20px;
+            margin-top: 15px;
             padding: 10px;
             border-radius: 4px;
         }
         .success {
-            background-color: #d4edda;
+            background: #d4edda;
             color: #155724;
         }
         .error {
-            background-color: #f8d7da;
+            background: #f8d7da;
             color: #721c24;
         }
     </style>
@@ -52,10 +49,22 @@
 <body>
 
 <div class="container">
-    <h2>Planifier un Tweet</h2>
+    <h2>Planifier un Tweet avec vos clés Twitter</h2>
     <form id="scheduleForm">
-        <label for="topic">Sujet :</label>
-        <input type="text" id="topic" name="topic" placeholder="Entrez le sujet du tweet" required>
+        <label for="topic">Sujet du Tweet :</label>
+        <input type="text" id="topic" name="topic" required placeholder="Sujet du tweet">
+
+        <label for="apiKey">TWITTER_API_KEY:</label>
+        <input type="text" id="apiKey" name="apiKey" required placeholder="Votre TWITTER_API_KEY">
+
+        <label for="apiSecret">TWITTER_API_SECRET_KEY:</label>
+        <input type="text" id="apiSecret" name="apiSecret" required placeholder="Votre TWITTER_API_SECRET_KEY">
+
+        <label for="accessToken">TWITTER_ACCESS_TOKEN:</label>
+        <input type="text" id="accessToken" name="accessToken" required placeholder="Votre TWITTER_ACCESS_TOKEN">
+
+        <label for="accessTokenSecret">TWITTER_ACCESS_TOKEN_SECRET:</label>
+        <input type="text" id="accessTokenSecret" name="accessTokenSecret" required placeholder="Votre TWITTER_ACCESS_TOKEN_SECRET">
 
         <button type="submit">Planifier le Tweet</button>
     </form>
@@ -63,45 +72,54 @@
 </div>
 
 <script>
-    document.getElementById('scheduleForm').addEventListener('submit', async function(e) {
-        e.preventDefault();
+document.getElementById('scheduleForm').addEventListener('submit', async function(e) {
+    e.preventDefault();
 
-        const topic = document.getElementById('topic').value.trim();
+    const topic = document.getElementById('topic').value.trim();
+    const apiKey = document.getElementById('apiKey').value.trim();
+    const apiSecret = document.getElementById('apiSecret').value.trim();
+    const accessToken = document.getElementById('accessToken').value.trim();
+    const accessTokenSecret = document.getElementById('accessTokenSecret').value.trim();
 
-        if (!topic) {
-            displayMessage("Veuillez remplir le champ du sujet.", "error");
-            return;
-        }
-
-        try {
-            const response = await fetch('http://127.0.0.1:8001/schedule', {  // Assurez-vous que le port correspond au backend
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ topic }),
-            });
-
-            const data = await response.json();
-
-            if (response.ok) {
-                displayMessage(data.message, "success");
-                document.getElementById('scheduleForm').reset();
-            } else {
-                displayMessage(data.detail || "Une erreur est survenue.", "error");
-            }
-        } catch (error) {
-            displayMessage("Échec de la connexion au serveur.", "error");
-            console.error('Erreur:', error);
-        }
-    });
-
-    function displayMessage(message, type) {
-        const messageDiv = document.getElementById('message');
-        messageDiv.textContent = message;
-        messageDiv.className = `message ${type}`;
-        messageDiv.style.display = 'block';
+    if (!topic || !apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
+        displayMessage("Veuillez remplir tous les champs.", "error");
+        return;
     }
+
+    try {
+        const response = await fetch('http://127.0.0.1:8001/schedule', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                topic,
+                TWITTER_API_KEY: apiKey,
+                TWITTER_API_SECRET_KEY: apiSecret,
+                TWITTER_ACCESS_TOKEN: accessToken,
+                TWITTER_ACCESS_TOKEN_SECRET: accessTokenSecret
+            })
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            displayMessage(data.message, "success");
+            document.getElementById('scheduleForm').reset();
+        } else {
+            displayMessage(data.detail || "Une erreur est survenue.", "error");
+        }
+    } catch (error) {
+        displayMessage("Échec de la connexion au serveur.", "error");
+        console.error(error);
+    }
+});
+
+function displayMessage(msg, type) {
+    const msgDiv = document.getElementById('message');
+    msgDiv.textContent = msg;
+    msgDiv.className = `message ${type}`;
+    msgDiv.style.display = 'block';
+}
 </script>
 
 </body>

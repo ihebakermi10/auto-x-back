@@ -1,12 +1,10 @@
+# tasks.py
+
 from crewai import Task
 from pydantic import Field
 from textwrap import dedent
 
 class GenerateCreativeTweetsTask(Task):
-    """
-    Task to generate multiple creative tweets on a 'topic'.
-    Returns a text (or a list) containing all the tweets.
-    """
     topic: str = Field(..., description="The subject on which to generate tweets")
 
     def __init__(self, agent, topic: str):
@@ -14,55 +12,48 @@ class GenerateCreativeTweetsTask(Task):
             description=dedent(f"""
                 Generate a single creative, concise, and engaging 
                 tweet on the subject: {topic}.
-                Each tweet must be less than 280 characters, 
-                and may include 1 or 2 relevant hashtags.
-                Use tools if necessary (research, etc.).
-                Return everything as a single text .
+                Each tweet must be < 280 characters.
             """),
             expected_output="A block of tweet text.",
             agent=agent,
             topic=topic
         )
 
-
 class OptimizeCommunicationTask(Task):
-    """
-    Optional task: proofreads and enriches tweets to make them 
-    more catchy, smoother, and more coherent, 
-    without exceeding 280 characters.
-    """
     tweets_text: str = Field(..., description="The tweet to optimize (text)")
 
     def __init__(self, agent, tweets_text: str):
         super().__init__(
             description=dedent("""
-                Receive a set of tweets in text format. 
-                Improve their flow, add a creative tone 
-                (e.g., humor, anecdote, friendlier style), 
-                while staying under 280 characters per tweet.
-                Return the enriched and ready-to-publish version.
+                Optional: Improve flow, add a creative tone,
+                stay under 280 characters, and return the enriched version.
             """),
-            expected_output="A block of text with the optimized tweet.",
+            expected_output="An optimized tweet text.",
             agent=agent,
             tweets_text=tweets_text
         )
 
-
 class PublishTweetsTask(Task):
     """
-    Final task: posts each tweet on Twitter 
-    via the publishing agent (Tweet Posting Agent).
+    Reçoit un dictionnaire contenant:
+      {
+        "tweet_text": "...",
+        "TWITTER_API_KEY": "...",
+        "TWITTER_API_SECRET_KEY": "...",
+        "TWITTER_ACCESS_TOKEN": "...",
+        "TWITTER_ACCESS_TOKEN_SECRET": "..."
+      }
+    Et appelle 'Post Tweet'.
     """
-    tweets_text: str = Field(..., description="The text of tweet to publish")
+    keys_data: dict = Field(..., description="Dict with tweet_text + 4 Twitter keys")
 
-    def __init__(self, agent, tweets_text: str):
+    def __init__(self, agent, keys_data: dict):
         super().__init__(
             description=dedent("""
-                Receive a tweet.
-                Publish them using the 'Post Tweet' tool.
-                Return a confirmation message for each publication.
+                Publish the tweet using the 'Post Tweet' tool,
+                returning success or error message.
             """),
-            expected_output="Summary of the status of each tweet (success/error).",
+            expected_output="Summary of tweet status (success or error).",
             agent=agent,
-            tweets_text=tweets_text
+            keys_data=keys_data
         )

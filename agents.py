@@ -1,12 +1,11 @@
+# agents.py
+
 import os
 from textwrap import dedent
 from crewai import Agent
 from dotenv import load_dotenv
 
 from chat_openai_manager import ChatOpenAIManager
-
-load_dotenv()
-
 from crewai_tools import SerperDevTool, WebsiteSearchTool
 from tools.post_tools import PostTools
 
@@ -18,11 +17,8 @@ class CreativeSystemAgents:
 
     def creative_tweet_agent(self):
         """
-        This agent receives a 'topic' (e.g., "AI in Marketing"),
-        and generates multiple original and creative tweets by leveraging
-        search tools to enrich the content.
+        Agent qui génère des tweets créatifs.
         """
-        # Instantiate CrewAI Tools (search, website, etc.)
         serper_tool = SerperDevTool(
             api_key=os.getenv("SERPER_API_KEY"), 
             name="SerperDevTool"
@@ -32,43 +28,38 @@ class CreativeSystemAgents:
         return Agent(
             role="Creative Tweet Agent",
             goal=dedent("""\
-                You are responsible for creating tweet  on a given theme (topic).
-                These tweets should be:
-                - Creative, original, < 280 characters
-                - Optionally include relevant hashtags
-                - Invoke sources, anecdotes, or interesting facts
-                  if they can enrich the content
-                - Make a call to action or encourage engagement
+                You are responsible for creating tweets on a given theme (topic).
+                Tweets should be < 280 characters, possibly include hashtags, and be original.
             """),
             backstory=dedent("""\
                 You are a creative agent specialized in drafting tweets.
-                You can use SerperDevTool and WebsiteSearchTool to research,
-                or simply rely on your LLM, to propose original, informative,
-                and catchy tweets.
             """),
-            tools=[
-                serper_tool,
-                website_search_tool
-            ],
+            tools=[serper_tool, website_search_tool],
             llm=self.llm,
             verbose=True,
         )
 
     def tweet_poster_agent(self):
         """
-        This agent receives the finalized list of tweets and posts them on Twitter
-        using the 'Post Tweet' tool (PostTools.post_tweet).
+        Agent qui publie le tweet final sur Twitter en utilisant l'outil 'Post Tweet'.
+        Reçoit un dictionnaire contenant:
+            {
+              'tweet_text': '...',
+              'TWITTER_API_KEY': '...',
+              'TWITTER_API_SECRET_KEY': '...',
+              'TWITTER_ACCESS_TOKEN': '...',
+              'TWITTER_ACCESS_TOKEN_SECRET': '...'
+            }
         """
         return Agent(
             role="Tweet Posting Agent",
             goal=dedent("""\
-                Receive tweet and use the 'Post Tweet' tool
-                to publish them. Return a confirmation message for
-                each posted tweet.
+                Receive a dictionary with tweet_text + Twitter keys
+                and use 'Post Tweet' to publish it.
             """),
             backstory=dedent("""\
                 You are the agent responsible for publishing tweets on Twitter,
-                without human intervention.
+                using user-provided credentials.
             """),
             tools=[PostTools.post_tweet],
             llm=self.llm,
