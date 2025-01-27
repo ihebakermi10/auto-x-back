@@ -28,7 +28,7 @@ class CreativeSystemAgents:
         return Agent(
             role="Creative Tweet Agent",
             goal=dedent("""\
-                You are responsible for creating tweets on a given theme (topic).
+                You are responsible for creating tweets on a given theme (personalty prompte).
                 - Ensure tweets are under 280 characters.
                 - Include exactly 2 relevant hashtags.
                 - Humanize the tone to make it engaging, relatable, and free of errors.

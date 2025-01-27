@@ -4,8 +4,9 @@ from textwrap import dedent
 
 class GenerateCreativeTweetsTask(Task):
     personality_prompt: str = Field(..., description="The topic to create tweets about")
+    tweets_text: str = Field(..., description="The tweet to optimize (text)")
 
-    def __init__(self, agent, personality_prompt: str):
+    def __init__(self, agent, personality_prompt: str,tweets_text: str):
         super().__init__(
             description=dedent(f"""
                 Generate a single creative, concise, and engaging tweet
@@ -14,25 +15,16 @@ class GenerateCreativeTweetsTask(Task):
                 - Be under 280 characters.
                 - Include exactly 2 relevant hashtags.
                 - Be humanized (engaging, relatable, and error-free).
-                - Avoid unnecessary repetition and use natural language.
             """),
             expected_output="A well-written tweet.",
             agent=agent,
-            personality_prompt=personality_prompt
+            personality_prompt=personality_prompt,
+            tweets_text=tweets_text
+
         )
 
 class PublishTweetsTask(Task):
-    """
-    Receives a dictionary containing the following information:
-      {
-        "tweet_text": "...",
-        "api_key": "...",
-        "api_secret": "...",
-        "access_token": "...",
-        "access_secret": "..."
-      }
-    Sends the tweet and provides the status of the operation.
-    """
+  
     keys_data: dict = Field(..., description="Dictionary with tweet content and API credentials")
 
     def __init__(self, agent, keys_data: dict):

@@ -1,9 +1,7 @@
-# agents_db.py
-
 import json
 import os
 import time
-from typing import List, Dict
+from typing import List, Dict, Optional
 
 class AgentsDatabase:
     def __init__(self, filepath="agents.json"):
@@ -40,3 +38,16 @@ class AgentsDatabase:
             json.dump(data, f, indent=4)
 
         return record
+
+    def find_by_agent_id(self, agent_id: str) -> Optional[Dict]:
+        """
+        Recherche un agent par son ID unique.
+
+        :param agent_id: ID unique de l'agent à rechercher.
+        :return: Un dictionnaire représentant l'agent ou None si non trouvé.
+        """
+        all_agents = self.get_all()
+        for record in all_agents:
+            if record.get("id") == agent_id:
+                return record
+        return None

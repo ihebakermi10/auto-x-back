@@ -42,8 +42,7 @@ from local_json_db import LocalJSONDatabase
 logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
-litellm.set_verbose = True
-
+os.environ['LITELLM_LOG'] = 'DEBUG'
 # =========================
 # Création de l'appli FastAPI
 # =========================
@@ -156,11 +155,12 @@ async def execute_daily_tweet(agent_id: str, personality_prompt: str, credential
     posting_agent = agents_system.tweet_poster_agent()
 
     # Tâches
-    generate_task = GenerateCreativeTweetsTask(agent=creative_agent, personality_prompt=personality_prompt)
+    generate_task = GenerateCreativeTweetsTask(agent=creative_agent, personality_prompt=personality_prompt, tweets_text="")
     publish_task = PublishTweetsTask(
         agent=posting_agent,
         keys_data={
-            "tweet_text": generate_task.tweets_text,  
+            "tweet_text": "",
+            "TWITTER_BEARER_TOKEN": credentials["TWITTER_BEARER_TOKEN"] , 
             "TWITTER_API_KEY": credentials["TWITTER_API_KEY"],
             "TWITTER_API_SECRET_KEY": credentials["TWITTER_API_SECRET_KEY"],
             "TWITTER_ACCESS_TOKEN": credentials["TWITTER_ACCESS_TOKEN"],
@@ -219,10 +219,9 @@ class TwitterReplyBot:
         self.twitter_me_id = self.get_me_id()
         self.tweet_response_limit = 35  # Nombre max de tweets à traiter par exécution
 
-        # Initialisation du modèle de langage
         if self.openai_api_key:
             self.llm = ChatOpenAI(
-                temperature=0.5,
+                temperature=0.2,
                 openai_api_key=self.openai_api_key,
                 model_name='gpt-4o-mini-2024-07-18'  # Assurez-vous que ce modèle est disponible
             )
@@ -450,7 +449,7 @@ async def create_agent(req: CreateAgentRequest):
         "TWITTER_BEARER_TOKEN": req.TWITTER_BEARER_TOKEN,
         "created_at": datetime.utcnow().isoformat()
     })
-    print("[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
+    print(f"[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
     logger.info(f"[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
 
     # 1. Planifier le tweet quotidien
@@ -471,7 +470,7 @@ async def create_agent(req: CreateAgentRequest):
             replace_existing=False,
             max_instances=1  
         )
-        print("[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
+        print(f"[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
         logger.info(f"[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
     except Exception as e:
         logger.error(f"[Agent {agent_id}] Erreur lors de la planification du job de réponses aux mentions: {e}")
