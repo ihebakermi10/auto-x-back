@@ -29,10 +29,13 @@ class CreativeSystemAgents:
             role="Creative Tweet Agent",
             goal=dedent("""\
                 You are responsible for creating tweets on a given theme (topic).
-                Tweets should be < 280 characters, possibly include hashtags, and be original.
+                - Ensure tweets are under 280 characters.
+                - Include exactly 2 relevant hashtags.
+                - Humanize the tone to make it engaging, relatable, and free of errors.
+                - Avoid unnecessary repetition or overly formal language.
             """),
             backstory=dedent("""\
-                You are a creative agent specialized in drafting tweets.
+                You are a creative agent specialized in drafting tweets that resonate with humans.
             """),
             tools=[serper_tool, website_search_tool],
             llm=self.llm,
@@ -40,17 +43,7 @@ class CreativeSystemAgents:
         )
 
     def tweet_poster_agent(self):
-        """
-        Agent qui publie le tweet final sur Twitter en utilisant l'outil 'Post Tweet'.
-        Reçoit un dictionnaire contenant:
-            {
-              'tweet_text': '...',
-              'TWITTER_API_KEY': '...',
-              'TWITTER_API_SECRET_KEY': '...',
-              'TWITTER_ACCESS_TOKEN': '...',
-              'TWITTER_ACCESS_TOKEN_SECRET': '...'
-            }
-        """
+
         return Agent(
             role="Tweet Posting Agent",
             goal=dedent("""\

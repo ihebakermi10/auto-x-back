@@ -24,7 +24,6 @@ from crewai.process import Process
 from agents import CreativeSystemAgents
 from tasks import (
     GenerateCreativeTweetsTask,
-    OptimizeCommunicationTask,
     PublishTweetsTask
 )
 
@@ -108,15 +107,19 @@ class CreateAgentRequest(BaseModel):
 # =======================================================
 # Fonctions de Planification des Tweets Quotidiens
 # =======================================================
-def get_random_time_for_next_day():
-    """Génère une heure et une minute aléatoires pour le prochain jour."""
+"""def get_random_time_for_next_day():
     now = datetime.now() + timedelta(days=1)
     hour = random.randint(0, 23)
     minute = random.randint(0, 59)
     next_run_time = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
     logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
+    return next_run_time"""
+def get_random_time_for_next_day():
+    """Génère la date et l'heure actuelles plus 2 minutes."""
+    now = datetime.now()
+    next_run_time = now + timedelta(minutes=2)
+    logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
     return next_run_time
-
 def schedule_daily_tweet_job(agent_id: str, personality_prompt: str, credentials: dict):
     """
     Planifie un job APScheduler pour publier un tweet quotidien à une heure aléatoire.
@@ -154,11 +157,10 @@ async def execute_daily_tweet(agent_id: str, personality_prompt: str, credential
 
     # Tâches
     generate_task = GenerateCreativeTweetsTask(agent=creative_agent, personality_prompt=personality_prompt)
-    optimize_task = OptimizeCommunicationTask(agent=creative_agent, tweets_text="")
     publish_task = PublishTweetsTask(
         agent=posting_agent,
         keys_data={
-            "tweet_text": "",  # Le texte sera rempli par la tâche précédente
+            "tweet_text": generate_task.tweets_text,  
             "TWITTER_API_KEY": credentials["TWITTER_API_KEY"],
             "TWITTER_API_SECRET_KEY": credentials["TWITTER_API_SECRET_KEY"],
             "TWITTER_ACCESS_TOKEN": credentials["TWITTER_ACCESS_TOKEN"],
@@ -168,7 +170,7 @@ async def execute_daily_tweet(agent_id: str, personality_prompt: str, credential
 
     crew = Crew(
         agents=[creative_agent, posting_agent],
-        tasks=[generate_task, optimize_task, publish_task],
+        tasks=[generate_task, publish_task],
         process=Process.sequential,
         verbose=True
     )
@@ -222,7 +224,7 @@ class TwitterReplyBot:
             self.llm = ChatOpenAI(
                 temperature=0.5,
                 openai_api_key=self.openai_api_key,
-                model_name='gpt-4'  # Assurez-vous que ce modèle est disponible
+                model_name='gpt-4o-mini-2024-07-18'  # Assurez-vous que ce modèle est disponible
             )
         else:
             logger.warning(f"[Agent {self.agent_id}] OPENAI_API_KEY non fourni. Les réponses aux mentions ne fonctionneront pas.")
@@ -403,7 +405,6 @@ async def create_agent(req: CreateAgentRequest):
         "TWITTER_ACCESS_TOKEN": req.TWITTER_ACCESS_TOKEN,
         "TWITTER_ACCESS_TOKEN_SECRET": req.TWITTER_ACCESS_TOKEN_SECRET,
         "TWITTER_BEARER_TOKEN": req.TWITTER_BEARER_TOKEN
-        # OPENAI_API_KEY n'est plus inclus ici
     }
     client = tweepy.Client(
     bearer_token=req.TWITTER_BEARER_TOKEN,
@@ -449,6 +450,7 @@ async def create_agent(req: CreateAgentRequest):
         "TWITTER_BEARER_TOKEN": req.TWITTER_BEARER_TOKEN,
         "created_at": datetime.utcnow().isoformat()
     })
+    print("[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
     logger.info(f"[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
 
     # 1. Planifier le tweet quotidien
@@ -469,6 +471,7 @@ async def create_agent(req: CreateAgentRequest):
             replace_existing=False,
             max_instances=1  
         )
+        print("[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
         logger.info(f"[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
     except Exception as e:
         logger.error(f"[Agent {agent_id}] Erreur lors de la planification du job de réponses aux mentions: {e}")

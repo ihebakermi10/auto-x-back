@@ -95,6 +95,96 @@
                 "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
                 "created_at": "2025-01-27T13:15:39.626637"
             }
+        },
+        {
+            "id": "rec_1737988836738",
+            "fields": {
+                "agent_id": "2abe48c7-2999-48a8-98d9-9d2bae04c776",
+                "name": "houci",
+                "url": null,
+                "personality_prompt": "marketing  and AI",
+                "TWITTER_API_KEY": "Nvp4gcGTT4jgW716SJ7Ua8A25",
+                "TWITTER_API_SECRET_KEY": "VztfZsKXjIcIlfqwr39yT7l4U1EaXHqTldLjrJzkPnwDP5VS2A",
+                "TWITTER_ACCESS_TOKEN": "hgVqo9QpCccpSpC1ynOUy5TLayt1voixZpGtKPS5DaOdU",
+                "TWITTER_ACCESS_TOKEN_SECRET": "hgVqo9QpCccpSpC1ynOUy5TLayt1voixZpGtKPS5DaOdU",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAOv2g9PfZ4QTdjSbxk1nn5hasnn4%3DZrLUYtWdY70XkEWZdcut5cy2HSLmqcKG9CHpB0cczliXlTPlr0",
+                "created_at": "2025-01-27T14:40:36.736604"
+            }
+        },
+        {
+            "id": "rec_1737988999361",
+            "fields": {
+                "agent_id": "f44ed411-2162-4d80-902d-65038a5856c0",
+                "name": "houci",
+                "url": "https://twitter.com/iheb_akermi",
+                "personality_prompt": "marketing  and AI",
+                "TWITTER_API_KEY": "Nvp4gcGTT4jgW716SJ7Ua8A25",
+                "TWITTER_API_SECRET_KEY": "VztfZsKXjIcIlfqwr39yT7l4U1EaXHqTldLjrJzkPnwDP5VS2A",
+                "TWITTER_ACCESS_TOKEN": "1646295665142628353-6cyZBfust8cBcvndzV2dRHzziktnHG",
+                "TWITTER_ACCESS_TOKEN_SECRET": "Td4voC4fWfLm3gCbBtNE0qNW2CrUqCbxtgOpyrHcNTink",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAOv2g9PfZ4QTdjSbxk1nn5hasnn4%3DZrLUYtWdY70XkEWZdcut5cy2HSLmqcKG9CHpB0cczliXlTPlr0",
+                "created_at": "2025-01-27T14:43:19.361281"
+            }
+        },
+        {
+            "id": "rec_1737989771499",
+            "fields": {
+                "agent_id": "ab7c6ab0-c929-43cb-8af9-95b5417db9e6",
+                "name": "houci",
+                "url": "https://twitter.com/iheb_akermi",
+                "personality_prompt": "marketing  and AI",
+                "TWITTER_API_KEY": "Nvp4gcGTT4jgW716SJ7Ua8A25",
+                "TWITTER_API_SECRET_KEY": "VztfZsKXjIcIlfqwr39yT7l4U1EaXHqTldLjrJzkPnwDP5VS2A",
+                "TWITTER_ACCESS_TOKEN": "1646295665142628353-6cyZBfust8cBcvndzV2dRHzziktnHG",
+                "TWITTER_ACCESS_TOKEN_SECRET": "Td4voC4fWfLm3gCbBtNE0qNW2CrUqCbxtgOpyrHcNTink",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAOv2g9PfZ4QTdjSbxk1nn5hasnn4%3DZrLUYtWdY70XkEWZdcut5cy2HSLmqcKG9CHpB0cczliXlTPlr0",
+                "created_at": "2025-01-27T14:56:11.499772"
+            }
+        },
+        {
+            "id": "rec_1737990158472",
+            "fields": {
+                "agent_id": "fc46499f-a780-4435-beea-1306aaf9e6bd",
+                "name": "dpnzpdfznfp",
+                "url": "https://twitter.com/iheb_akermi",
+                "personality_prompt": "marketing  and AI",
+                "TWITTER_API_KEY": "Nvp4gcGTT4jgW716SJ7Ua8A25",
+                "TWITTER_API_SECRET_KEY": "VztfZsKXjIcIlfqwr39yT7l4U1EaXHqTldLjrJzkPnwDP5VS2A",
+                "TWITTER_ACCESS_TOKEN": "1646295665142628353-6cyZBfust8cBcvndzV2dRHzziktnHG",
+                "TWITTER_ACCESS_TOKEN_SECRET": "Td4voC4fWfLm3gCbBtNE0qNW2CrUqCbxtgOpyrHcNTink",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAOv2g9PfZ4QTdjSbxk1nn5hasnn4%3DZrLUYtWdY70XkEWZdcut5cy2HSLmqcKG9CHpB0cczliXlTPlr0",
+                "created_at": "2025-01-27T15:02:38.472667"
+            }
+        },
+        {
+            "id": "rec_1737990786458",
+            "fields": {
+                "agent_id": "3e75be38-329a-4445-ab1c-e60f54719094",
+                "name": "dpnzpdfznfp",
+                "url": "https://twitter.com/iheb_akermi",
+                "personality_prompt": "marketing  and AI",
+                "TWITTER_API_KEY": "Nvp4gcGTT4jgW716SJ7Ua8A25",
+                "TWITTER_API_SECRET_KEY": "VztfZsKXjIcIlfqwr39yT7l4U1EaXHqTldLjrJzkPnwDP5VS2A",
+                "TWITTER_ACCESS_TOKEN": "1646295665142628353-6cyZBfust8cBcvndzV2dRHzziktnHG",
+                "TWITTER_ACCESS_TOKEN_SECRET": "Td4voC4fWfLm3gCbBtNE0qNW2CrUqCbxtgOpyrHcNTink",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAOv2g9PfZ4QTdjSbxk1nn5hasnn4%3DZrLUYtWdY70XkEWZdcut5cy2HSLmqcKG9CHpB0cczliXlTPlr0",
+                "created_at": "2025-01-27T15:13:06.457421"
+            }
+        },
+        {
+            "id": "rec_1737991213789",
+            "fields": {
+                "agent_id": "a0249c38-bf1a-40c2-94f0-93c65e689074",
+                "name": "dpnzpdfznfp",
+                "url": "https://twitter.com/iheb_akermi",
+                "personality_prompt": "marketing  and AI",
+                "TWITTER_API_KEY": "Nvp4gcGTT4jgW716SJ7Ua8A25",
+                "TWITTER_API_SECRET_KEY": "VztfZsKXjIcIlfqwr39yT7l4U1EaXHqTldLjrJzkPnwDP5VS2A",
+                "TWITTER_ACCESS_TOKEN": "1646295665142628353-6cyZBfust8cBcvndzV2dRHzziktnHG",
+                "TWITTER_ACCESS_TOKEN_SECRET": "Td4voC4fWfLm3gCbBtNE0qNW2CrUqCbxtgOpyrHcNTink",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAOv2g9PfZ4QTdjSbxk1nn5hasnn4%3DZrLUYtWdY70XkEWZdcut5cy2HSLmqcKG9CHpB0cczliXlTPlr0",
+                "created_at": "2025-01-27T15:20:13.789647"
+            }
         }
     ]
 }
