@@ -1,0 +1,85 @@
+{
+    "records": [
+        {
+            "id": "rec_1737973274931",
+            "fields": {
+                "agent_id": "9cceb566-4afa-4cc6-8832-7d5935b48585",
+                "topic": "ai and sport",
+                "TWITTER_API_KEY": "cwXzRjloQcc5e0qhfOEGVdlNS",
+                "TWITTER_API_SECRET_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T10:21:14.931109"
+            }
+        },
+        {
+            "id": "rec_1737973383165",
+            "fields": {
+                "agent_id": "5a03b68b-7229-4834-88cd-7024d6a0b3e6",
+                "topic": "ai and sport",
+                "TWITTER_API_KEY": "cwXzRjloQcc5e0qhfOEGVdlNS",
+                "TWITTER_API_SECRET_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T10:23:03.165111"
+            }
+        },
+        {
+            "id": "rec_1737975423643",
+            "fields": {
+                "agent_id": "4169967d-cafb-4a94-b192-cd6018cb9b6d",
+                "topic": "ai and sport",
+                "TWITTER_API_KEY": "cwXzRjloQcc5e0qhfOEGVdlNS",
+                "TWITTER_API_SECRET_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T10:57:03.643420"
+            }
+        },
+        {
+            "id": "rec_1737975842166",
+            "fields": {
+                "agent_id": "794a074c-23ca-43c8-9b3b-52e7f1b9015a",
+                "name": "iheb akermi",
+                "personality_prompt": "ai and sport",
+                "TWITTER_API_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_API_SECRET_KEY": "DoCza4vDqA5n8YXXA6PBgHkUuDVP4MRtbNfzlmCRKgU0qwAes3",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T11:04:02.165803"
+            }
+        },
+        {
+            "id": "rec_1737975886568",
+            "fields": {
+                "agent_id": "cd27a32a-a4b1-4343-9189-175ba4b00ca2",
+                "name": "iheb akermi",
+                "personality_prompt": "ai and sport",
+                "TWITTER_API_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_API_SECRET_KEY": "DoCza4vDqA5n8YXXA6PBgHkUuDVP4MRtbNfzlmCRKgU0qwAes3",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T11:04:46.567585"
+            }
+        },
+        {
+            "id": "rec_1737976531740",
+            "fields": {
+                "agent_id": "70ec5e45-d1f3-44bb-ad8a-5efece79d25d",
+                "name": "iheb akermi",
+                "personality_prompt": "ai and sport and technologie",
+                "TWITTER_API_KEY": "cwXzRjloQcc5e0qhfOEGVdlNS",
+                "TWITTER_API_SECRET_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T11:15:31.740965"
+            }
+        }
+    ]
+}

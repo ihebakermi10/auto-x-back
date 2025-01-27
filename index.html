@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Planificateur de Tweets (Clés Dynamiques)</title>
+    <title>Créer votre agent Twitter</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -49,62 +49,76 @@
 <body>
 
 <div class="container">
-    <h2>Planifier un Tweet avec vos clés Twitter</h2>
-    <form id="scheduleForm">
-        <label for="topic">Sujet du Tweet :</label>
-        <input type="text" id="topic" name="topic" required placeholder="Sujet du tweet">
+    <h2>Créer votre agent d'automatisation Twitter</h2>
+    <form id="createAgentForm">
+        <label for="name">Nom de l'Agent :</label>
+        <input type="text" id="name" name="name" required placeholder="Nom de l'agent">
 
-        <label for="apiKey">TWITTER_API_KEY:</label>
+        <label for="personalityPrompt">Prompt de Personnalité :</label>
+        <input type="text" id="personalityPrompt" name="personalityPrompt" required placeholder="Prompt de personnalité">
+
+        <label for="apiKey">TWITTER_API_KEY :</label>
         <input type="text" id="apiKey" name="apiKey" required placeholder="Votre TWITTER_API_KEY">
 
-        <label for="apiSecret">TWITTER_API_SECRET_KEY:</label>
+        <label for="apiSecret">TWITTER_API_SECRET_KEY :</label>
         <input type="text" id="apiSecret" name="apiSecret" required placeholder="Votre TWITTER_API_SECRET_KEY">
 
-        <label for="accessToken">TWITTER_ACCESS_TOKEN:</label>
+        <label for="accessToken">TWITTER_ACCESS_TOKEN :</label>
         <input type="text" id="accessToken" name="accessToken" required placeholder="Votre TWITTER_ACCESS_TOKEN">
 
-        <label for="accessTokenSecret">TWITTER_ACCESS_TOKEN_SECRET:</label>
+        <label for="accessTokenSecret">TWITTER_ACCESS_TOKEN_SECRET :</label>
         <input type="text" id="accessTokenSecret" name="accessTokenSecret" required placeholder="Votre TWITTER_ACCESS_TOKEN_SECRET">
 
-        <button type="submit">Planifier le Tweet</button>
+        <label for="bearerToken">TWITTER_BEARER_TOKEN :</label>
+        <input type="text" id="bearerToken" name="bearerToken" required placeholder="Votre TWITTER_BEARER_TOKEN">
+
+        <!-- Le champ OPENAI_API_KEY est supprimé -->
+
+        <button type="submit">Créer votre agent automatique</button>
     </form>
     <div id="message" class="message" style="display: none;"></div>
 </div>
 
 <script>
-document.getElementById('scheduleForm').addEventListener('submit', async function(e) {
+document.getElementById('createAgentForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
-    const topic = document.getElementById('topic').value.trim();
+    const name = document.getElementById('name').value.trim();
+    const personalityPrompt = document.getElementById('personalityPrompt').value.trim();
     const apiKey = document.getElementById('apiKey').value.trim();
     const apiSecret = document.getElementById('apiSecret').value.trim();
     const accessToken = document.getElementById('accessToken').value.trim();
     const accessTokenSecret = document.getElementById('accessTokenSecret').value.trim();
+    const bearerToken = document.getElementById('bearerToken').value.trim();
 
-    if (!topic || !apiKey || !apiSecret || !accessToken || !accessTokenSecret) {
+    // Simple validation
+    if (!name || !personalityPrompt || !apiKey || !apiSecret || !accessToken || !accessTokenSecret || !bearerToken) {
         displayMessage("Veuillez remplir tous les champs.", "error");
         return;
     }
 
     try {
-        const response = await fetch('http://127.0.0.1:8001/schedule', {
+        const response = await fetch('http://127.0.0.1:8001/create-agent', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                topic,
+                name,
+                personality_prompt: personalityPrompt,
                 TWITTER_API_KEY: apiKey,
                 TWITTER_API_SECRET_KEY: apiSecret,
                 TWITTER_ACCESS_TOKEN: accessToken,
-                TWITTER_ACCESS_TOKEN_SECRET: accessTokenSecret
+                TWITTER_ACCESS_TOKEN_SECRET: accessTokenSecret,
+                TWITTER_BEARER_TOKEN: bearerToken
+                // OPENAI_API_KEY n'est plus inclus ici
             })
         });
 
         const data = await response.json();
         if (response.ok) {
             displayMessage(data.message, "success");
-            document.getElementById('scheduleForm').reset();
+            document.getElementById('createAgentForm').reset();
         } else {
             displayMessage(data.detail || "Une erreur est survenue.", "error");
         }
