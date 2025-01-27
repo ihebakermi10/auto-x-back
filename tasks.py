@@ -5,18 +5,18 @@ from pydantic import Field
 from textwrap import dedent
 
 class GenerateCreativeTweetsTask(Task):
-    topic: str = Field(..., description="The subject on which to generate tweets")
+    personality_prompt : str = Field(..., description="The subject on which to generate tweets")
 
-    def __init__(self, agent, topic: str):
+    def __init__(self, agent, personality_prompt: str):
         super().__init__(
             description=dedent(f"""
                 Generate a single creative, concise, and engaging 
-                tweet on the subject: {topic}.
+                tweet on the subject: {personality_prompt}.
                 Each tweet must be < 280 characters.
             """),
             expected_output="A block of tweet text.",
             agent=agent,
-            topic=topic
+            personality_prompt=personality_prompt
         )
 
 class OptimizeCommunicationTask(Task):

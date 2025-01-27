@@ -394,7 +394,7 @@ async def create_agent(req: CreateAgentRequest):
     # Générer un ID unique pour l'agent
     agent_id = str(uuid.uuid4())
     logger.info(f"[Agent {agent_id}] Création d'un nouvel agent avec le prompt de personnalité: '{req.personality_prompt}' et le nom: '{req.name}'")
-
+     
     # Stocker les credentials et le prompt de personnalité pour cet agent
     credentials = {
         "personality_prompt": req.personality_prompt,
@@ -405,14 +405,42 @@ async def create_agent(req: CreateAgentRequest):
         "TWITTER_BEARER_TOKEN": req.TWITTER_BEARER_TOKEN
         # OPENAI_API_KEY n'est plus inclus ici
     }
+    client = tweepy.Client(
+    bearer_token=req.TWITTER_BEARER_TOKEN,
+    consumer_key=req.TWITTER_API_KEY,
+    consumer_secret=req.TWITTER_API_SECRET_KEY,
+    access_token=req.TWITTER_ACCESS_TOKEN,
+    access_token_secret=req.TWITTER_ACCESS_TOKEN_SECRET,
+    wait_on_rate_limit=True,
+)
+    def get_my_twitter_profile_url() -> str:
+      """
+    Récupère l'URL de profil Twitter du compte authentifié.
+    
+    :return: URL de profil Twitter.
+      """
+      try:
+        user = client.get_me()
+        if user and user.data:
+            username = user.data.username
+            profile_url = f"https://twitter.com/{username}"
+            print(f"URL du profil Twitter : {profile_url}")
+            return profile_url
+        else:
+            print("Impossible de récupérer les informations de l'utilisateur authentifié.")
+            return None
+      except tweepy.TweepyException as e:
+        print(f"Erreur lors de la récupération des données utilisateur : {e}")
+        return None
+
 
     # Obtenir la clé OpenAI globale depuis les variables d'environnement
     global_openai_api_key = os.getenv("OPENAI_API_KEY")
 
-    # Ajouter l'agent à la base de données JSON
     AGENTS_DB.insert({
         "agent_id": agent_id,
         "name": req.name,
+        "url": get_my_twitter_profile_url(),
         "personality_prompt": req.personality_prompt,
         "TWITTER_API_KEY": req.TWITTER_API_KEY,
         "TWITTER_API_SECRET_KEY": req.TWITTER_API_SECRET_KEY,

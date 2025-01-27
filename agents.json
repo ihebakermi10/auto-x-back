@@ -80,6 +80,21 @@
                 "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
                 "created_at": "2025-01-27T11:15:31.740965"
             }
+        },
+        {
+            "id": "rec_1737983739628",
+            "fields": {
+                "agent_id": "758dddf5-b7e5-4de5-9d73-10e95add0b78",
+                "name": "iheb akermi",
+                "url": "https://twitter.com/ihebakermi29745",
+                "personality_prompt": "ai and sport",
+                "TWITTER_API_KEY": "cwXzRjloQcc5e0qhfOEGVdlNS",
+                "TWITTER_API_SECRET_KEY": "xIyYDoU223jzULqM0GXyFGAtqZRVm4iCEOR0lR2SbUZJcGk3oO",
+                "TWITTER_ACCESS_TOKEN": "1880746870378508288-WpsAEjvxxnHWNidawdjJe5i5xGxNww",
+                "TWITTER_ACCESS_TOKEN_SECRET": "w8aNFcoOnyxqok48IaoOPqlzbaX6Kg3VBacYlfkR4gpR2",
+                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAA%2F4zMLD6iTo6l57iB7p3hBILyx0k%3Dq69a4qXaPWtTl9XRH1dqEdyUPFer8Lku28EFIBEWkFfaGiouKZ",
+                "created_at": "2025-01-27T13:15:39.626637"
+            }
         }
     ]
 }
