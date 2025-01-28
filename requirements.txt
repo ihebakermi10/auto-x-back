@@ -16,5 +16,4 @@ uvicorn
 pydantic 
 python-dotenv 
 apscheduler 
- 
 tweepy 
