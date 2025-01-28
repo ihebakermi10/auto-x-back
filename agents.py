@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 from chat_openai_manager import ChatOpenAIManager
 from crewai_tools import SerperDevTool, WebsiteSearchTool
 
-from tools.post_tools import PostTools
+from tools.post_tools import  make_post_tweet_tool
 
 load_dotenv()
 
@@ -57,7 +57,7 @@ class CreativeSystemAgents:
             Responsible for publishing tweets on Twitter via 'Post Tweet'.
         """),
 
-        tools=[PostTools(agent_id).post_tweet],
+        tools=[make_post_tweet_tool(agent_id)],
         llm=self.llm,
         verbose=True
     )
