@@ -1,56 +1,58 @@
-# tools/post_tweet_tool.py
+# tools/post_tools.py
 
-from typing import Type
-from pydantic import BaseModel, Field
 import tweepy
-from crewai.tools import BaseTool
+from crewai.tools import tool
 
-class PostTweetInput(BaseModel):
-    """Schéma d'entrée pour la publication d'un tweet."""
-    tweet_text: str = Field(..., description="Le contenu du tweet à publier.")
-
-class PostTweetTool(BaseTool):
-    """
-    Un outil CrewAI qui publie un tweet via l'API Twitter (Tweepy).
-    Les clés/jetons d'API sont définis au moment de l'instanciation de la classe.
-    """
-    name: str = "post_tweet"
-    description: str = "Publie un tweet sur Twitter en utilisant Tweepy."
-    args_schema: Type[BaseModel] = PostTweetInput
-
-    def __init__(
-        self,
-        bearer_token: str,
-        api_key: str,
-        api_secret_key: str,
-        access_token: str,
-        access_token_secret: str,
-        name: str = None,
-        description: str = None
-    ):
+class PostTools:
+    @tool("Post Tweet")
+    def post_tweet(tweet_data: dict) -> str:
         """
-        Constructeur qui initialise le client Tweepy avec les identifiants d'API.
-        """
-        super().__init__(
-            name=name or self.name,
-            description=description or self.description,
-        )
+        Publie un tweet sur Twitter en utilisant Tweepy.
 
-        self.client = tweepy.Client(
-            bearer_token=bearer_token,
-            consumer_key=api_key,
-            consumer_secret=api_secret_key,
-            access_token=access_token,
-            access_token_secret=access_token_secret,
-            # wait_on_rate_limit=True
-        )
+        Paramètre:
+            tweet_data (dict): Un dictionnaire contenant:
+            {
+                "tweet_text": "Contenu du tweet",
+                "TWITTER_BEARER_TOKEN": "..."
+                "TWITTER_API_KEY": "...",
+                "TWITTER_API_SECRET_KEY": "...",
+                "TWITTER_ACCESS_TOKEN": "...",
+                "TWITTER_ACCESS_TOKEN_SECRET": "..."
+            }
 
-    def _run(self, tweet_text: str) -> str:
+        Retour:
+            str: message de confirmation ou d'erreur.
         """
-        Publie le tweet sur Twitter.
-        """
+# Assuming tweet_data is the dictionary containing your keys and values
+        tweet_text = tweet_data.get("tweet_text", "")
+        bearer_token = tweet_data.get("TWITTER_BEARER_TOKEN")
+        api_key = tweet_data.get("TWITTER_API_KEY")
+        api_secret_key = tweet_data.get("TWITTER_API_SECRET_KEY")
+        access_token = tweet_data.get("TWITTER_ACCESS_TOKEN")
+        access_token_secret = tweet_data.get("TWITTER_ACCESS_TOKEN_SECRET")
+
+# Print all variables
+        print("Tweet Text:", tweet_text)
+        print("Bearer Token:", bearer_token)
+        print("API Key:", api_key)
+        print("API Secret Key:", api_secret_key)
+        print("Access Token:", access_token)
+        print("Access Token Secret:", access_token_secret)
+
+        
+  
+
         try:
-            self.client.create_tweet(text=tweet_text)
-            return f"Tweet publié avec succès: {tweet_text}"
+            client = tweepy.Client(
+                bearer_token=bearer_token,
+                consumer_key=api_key,
+                consumer_secret=api_secret_key,
+                access_token=access_token,
+                access_token_secret=access_token_secret,
+                #wait_on_rate_limit=True
+
+            )
+            response = client.create_tweet(text=tweet_text)
+            return f"Tweet publié avec succès: {tweet_text} "
         except Exception as e:
-            return f"Échec de la publication du tweet. Erreur: {str(e)}"
+            return f"Échec de la publication. Erreur: {str(e)}"

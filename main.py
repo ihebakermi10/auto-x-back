@@ -134,33 +134,40 @@ def schedule_daily_tweet_job(agent_id: str, personality_prompt: str, credentials
     )
     logger.info(f"[Agent {agent_id}] Job 'daily_tweet_job' planifié pour {next_run_time.isoformat()} UTC")
 
-
 async def execute_daily_tweet(agent_id: str, personality_prompt: str, credentials: dict):
-    # 1) Créer l’agent "créatif"
+    """
+    Génère et publie un tweet, puis replanifie le job pour le jour suivant.
+    """
+    logger.info(f"[Agent {agent_id}] Exécution du tweet quotidien pour le prompt de personnalité: '{personality_prompt}' à {datetime.utcnow().isoformat()} UTC")
+
+    if not all([
+        personality_prompt,
+        credentials.get("TWITTER_API_KEY"),
+        credentials.get("TWITTER_API_SECRET_KEY"),
+        credentials.get("TWITTER_ACCESS_TOKEN"),
+        credentials.get("TWITTER_ACCESS_TOKEN_SECRET")
+    ]):
+        logger.error(f"[Agent {agent_id}] Manque des credentials ou personality_prompt pour poster le tweet.")
+        return
+
+    # Création des agents CrewAI
     creative_agent = agents_system.creative_tweet_agent()
+    posting_agent = agents_system.tweet_poster_agent()
 
-    # 2) Créer l’agent "posting" (l'agent porteur du PostTweetTool)
-    posting_agent = agents_system.tweet_poster_agent(
-        bearer_token=credentials["TWITTER_BEARER_TOKEN"],
-        api_key=credentials["TWITTER_API_KEY"],
-        api_secret_key=credentials["TWITTER_API_SECRET_KEY"],
-        access_token=credentials["TWITTER_ACCESS_TOKEN"],
-        access_token_secret=credentials["TWITTER_ACCESS_TOKEN_SECRET"]
-    )
-
-    # 3) Tâches
-    generate_task = GenerateCreativeTweetsTask(
-        agent=creative_agent,
-        personality_prompt=personality_prompt,
-        tweets_text=""
-    )
-
+    # Tâches
+    generate_task = GenerateCreativeTweetsTask(agent=creative_agent, personality_prompt=personality_prompt, tweets_text="")
     publish_task = PublishTweetsTask(
         agent=posting_agent,
-        tweet_text=""  # => on mettra à jour après exécution de generate_task
+        keys_data={
+            "tweet_text": "",
+            "TWITTER_BEARER_TOKEN": credentials["TWITTER_BEARER_TOKEN"] , 
+            "TWITTER_API_KEY": credentials["TWITTER_API_KEY"],
+            "TWITTER_API_SECRET_KEY": credentials["TWITTER_API_SECRET_KEY"],
+            "TWITTER_ACCESS_TOKEN": credentials["TWITTER_ACCESS_TOKEN"],
+            "TWITTER_ACCESS_TOKEN_SECRET": credentials["TWITTER_ACCESS_TOKEN_SECRET"]
+        }
     )
 
-    # 4) Crew en process séquentiel
     crew = Crew(
         agents=[creative_agent, posting_agent],
         tasks=[generate_task, publish_task],
@@ -170,14 +177,12 @@ async def execute_daily_tweet(agent_id: str, personality_prompt: str, credential
 
     try:
         result = crew.kickoff()
-        # result va contenir la liste des résultats de tasks
-        # tasks[0].result => tweet généré
-        # tasks[1].result => résultat de la publication
         logger.info(f"[Agent {agent_id}] Tweet publié avec succès.")
+        logger.debug(f"[Agent {agent_id}] Résultat brut: {result}")
     except Exception as e:
-        logger.error(f"[Agent {agent_id}] Erreur: {e}")
+        logger.error(f"[Agent {agent_id}] Erreur lors de l'exécution du tweet: {e}")
 
-    # Replanifier le job
+    # Re-planifier pour le jour suivant
     schedule_daily_tweet_job(agent_id, personality_prompt, credentials)
 
 # =======================================================

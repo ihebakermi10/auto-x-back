@@ -5,43 +5,30 @@ from textwrap import dedent
 from crewai import Agent
 from dotenv import load_dotenv
 
-# Gestion de votre LLM (ChatOpenAIManager) -- exemple
 from chat_openai_manager import ChatOpenAIManager
-
-# Outils divers (ex. SerperDevTool, WebsiteSearchTool)
 from crewai_tools import SerperDevTool, WebsiteSearchTool
-
-from tools.post_tools import PostTweetTool
-
-
+from tools.post_tools import PostTools
 
 load_dotenv()
 
 class CreativeSystemAgents:
     def __init__(self):
-        """
-        Initialise un LLM dès la création de l'instance.
-        """
         self.llm = ChatOpenAIManager().create_llm()
 
-    def creative_tweet_agent(self) -> Agent:
+    def creative_tweet_agent(self):
         """
         Agent qui génère des tweets créatifs.
-        Utilise un LLM et quelques outils de recherche (optionnels).
         """
-        # Outils (si besoin de recherche ou d'infos externes)
         serper_tool = SerperDevTool(
-            api_key=os.getenv("SERPER_API_KEY"),
+            api_key=os.getenv("SERPER_API_KEY"), 
             name="SerperDevTool"
         )
         website_search_tool = WebsiteSearchTool(name="WebsiteSearchTool")
 
-        # Retourne un agent paramétré pour la création de tweets
         return Agent(
-            name="creative_agent",
             role="Creative Tweet Agent",
             goal=dedent("""\
-                You are responsible for creating tweets on a given theme (personality prompt).
+                You are responsible for creating tweets on a given theme (personalty prompte).
                 - Ensure tweets are under 280 characters.
                 - Include exactly 2 relevant hashtags.
                 - Humanize the tone to make it engaging, relatable, and free of errors.
@@ -55,34 +42,19 @@ class CreativeSystemAgents:
             verbose=True,
         )
 
-    def tweet_poster_agent(
-        self,
-        bearer_token: str,
-        api_key: str,
-        api_secret_key: str,
-        access_token: str,
-        access_token_secret: str
-    ) -> Agent:
-        """
-        Retourne un Agent configuré avec l'outil PostTweetTool,
-        qui sait publier un tweet via l'API Twitter (Tweepy).
-        Les credentials sont fournis à la construction de PostTweetTool.
-        """
-        # Instanciation du tool dédié à la publication Twitter
-        post_tweet_tool = PostTweetTool(
-            bearer_token=bearer_token,
-            api_key=api_key,
-            api_secret_key=api_secret_key,
-            access_token=access_token,
-            access_token_secret=access_token_secret,
-        )
+    def tweet_poster_agent(self):
 
-        # Crée l'agent (ici, le LLM est optionnel, 
-        # vous pouvez l'omettre si l'agent de publication ne dialogue pas)
-        agent = Agent(
-            name="posting_agent",
-            tools=[post_tweet_tool],
-            llm=self.llm,  # Gardez ou retirez selon vos besoins
+        return Agent(
+            role="Tweet Posting Agent",
+            goal=dedent("""\
+                Receive a dictionary with tweet_text + Twitter keys
+                and use 'Post Tweet' to publish it.
+            """),
+            backstory=dedent("""\
+                You are the agent responsible for publishing tweets on Twitter,
+                using user-provided credentials.
+            """),
+            tools=[PostTools.post_tweet],
+            llm=self.llm,
             verbose=True,
         )
-        return agent
