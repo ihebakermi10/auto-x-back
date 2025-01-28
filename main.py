@@ -152,21 +152,13 @@ async def execute_daily_tweet(agent_id: str, personality_prompt: str, credential
 
     # Création des agents CrewAI
     creative_agent = agents_system.creative_tweet_agent()
-    posting_agent = agents_system.tweet_poster_agent()
+    posting_agent = agents_system.tweet_poster_agent(agent_id) # je veux rendre post agen depondre de id agent donc la varible va etre transmit par la classe et entre dans le tool de clette classe 
 
     # Tâches
     generate_task = GenerateCreativeTweetsTask(agent=creative_agent, personality_prompt=personality_prompt, tweets_text="")
     publish_task = PublishTweetsTask(
         agent=posting_agent,
-        keys_data={
-            "tweet_text": "",
-            "TWITTER_BEARER_TOKEN": credentials["TWITTER_BEARER_TOKEN"] , 
-            "TWITTER_API_KEY": credentials["TWITTER_API_KEY"],
-            "TWITTER_API_SECRET_KEY": credentials["TWITTER_API_SECRET_KEY"],
-            "TWITTER_ACCESS_TOKEN": credentials["TWITTER_ACCESS_TOKEN"],
-            "TWITTER_ACCESS_TOKEN_SECRET": credentials["TWITTER_ACCESS_TOKEN_SECRET"]
-        }
-    )
+     tweet_text="")
 
     crew = Crew(
         agents=[creative_agent, posting_agent],
@@ -393,7 +385,7 @@ async def create_agent(req: CreateAgentRequest):
     2. Un job récurrent toutes les 6 minutes pour répondre aux mentions.
     """
     # Générer un ID unique pour l'agent
-    agent_id = str(uuid.uuid4())
+    agent_id = f"{random.randint(1000, 9999)}"
     logger.info(f"[Agent {agent_id}] Création d'un nouvel agent avec le prompt de personnalité: '{req.personality_prompt}' et le nom: '{req.name}'")
      
     # Stocker les credentials et le prompt de personnalité pour cet agent

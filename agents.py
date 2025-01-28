@@ -7,6 +7,7 @@ from dotenv import load_dotenv
 
 from chat_openai_manager import ChatOpenAIManager
 from crewai_tools import SerperDevTool, WebsiteSearchTool
+
 from tools.post_tools import PostTools
 
 load_dotenv()
@@ -42,19 +43,21 @@ class CreativeSystemAgents:
             verbose=True,
         )
 
-    def tweet_poster_agent(self):
 
-        return Agent(
-            role="Tweet Posting Agent",
-            goal=dedent("""\
-                Receive a dictionary with tweet_text + Twitter keys
-                and use 'Post Tweet' to publish it.
-            """),
-            backstory=dedent("""\
-                You are the agent responsible for publishing tweets on Twitter,
-                using user-provided credentials.
-            """),
-            tools=[PostTools.post_tweet],
-            llm=self.llm,
-            verbose=True,
-        )
+    def tweet_poster_agent(self, agent_id: str):
+  
+     return Agent(
+        role="Tweet Posting Agent",
+        goal=dedent("""\
+            You receive only a tweet_text.
+            You must call 'Post Tweet' to publish it using
+            the credentials from the agent_id stored in your tool.
+        """),
+        backstory=dedent("""\
+            Responsible for publishing tweets on Twitter via 'Post Tweet'.
+        """),
+
+        tools=[PostTools(agent_id).post_tweet],
+        llm=self.llm,
+        verbose=True
+    )
