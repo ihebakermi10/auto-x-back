@@ -51,3 +51,22 @@ class AgentsDatabase:
             if record.get("id") == agent_id:
                 return record
         return None
+    def find_by_api_keys(self, api_key: str, api_secret_key: str, access_token: str, access_token_secret: str) -> Optional[Dict]:
+        """
+        Recherche un agent par ses clés API.
+
+        :param api_key: Clé API Twitter.
+        :param api_secret_key: Clé secrète API Twitter.
+        :param access_token: Token d'accès Twitter.
+        :param access_token_secret: Clé secrète du token d'accès Twitter.
+        :return: Un dictionnaire représentant l'agent ou None si non trouvé.
+        """
+        all_agents = self.get_all()
+        for record in all_agents:
+            fields = record.get("fields", {})
+            if (fields.get("TWITTER_API_KEY") == api_key and
+                fields.get("TWITTER_API_SECRET_KEY") == api_secret_key and
+                fields.get("TWITTER_ACCESS_TOKEN") == access_token and
+                fields.get("TWITTER_ACCESS_TOKEN_SECRET") == access_token_secret):
+                return record
+        return None

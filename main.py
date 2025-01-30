@@ -11,12 +11,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 from typing import Optional
 
-# APScheduler pour la planification (daily + 6 minutes)
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.date import DateTrigger
 from apscheduler.triggers.interval import IntervalTrigger
 
-# CrewAI (pour la partie planification de tweets)
 import litellm
 from crewai import Crew
 from crewai.process import Process
@@ -58,7 +56,7 @@ origins = [
 ]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -101,7 +99,7 @@ class CreateAgentRequest(BaseModel):
     TWITTER_ACCESS_TOKEN: str = Field(..., description="Token d'Accès Twitter")
     TWITTER_ACCESS_TOKEN_SECRET: str = Field(..., description="Token Secrète d'Accès Twitter")
     TWITTER_BEARER_TOKEN: str = Field(..., description="Token Bearer Twitter")
-    # OPENAI_API_KEY n'est plus requis ici
+
 
 # =======================================================
 # Fonctions de Planification des Tweets Quotidiens
@@ -111,14 +109,22 @@ class CreateAgentRequest(BaseModel):
     hour = random.randint(0, 23)
     minute = random.randint(0, 59)
     next_run_time = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
+    print(f"Next run time generated: {next_run_time.isoformat()}")
     logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
     return next_run_time"""
 def get_random_time_for_next_day():
-    """Génère la date et l'heure actuelles plus 2 minutes."""
-    now = datetime.now()
-    next_run_time = now + timedelta(minutes=1)
+    # Get the current time and add 2 minutes
+    now = datetime.now() + timedelta(minutes=2)
+    
+    # Replace seconds and microseconds to ensure precise timing
+    next_run_time = now.replace(second=0, microsecond=0)
+    
+    # Log the next run time for debugging
+    print(f"Next run time generated: {next_run_time.isoformat()}")
     logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
+    
     return next_run_time
+
 def schedule_daily_tweet_job(agent_id: str, personality_prompt: str, credentials: dict):
     """
     Planifie un job APScheduler pour publier un tweet quotidien à une heure aléatoire.
@@ -150,11 +156,9 @@ async def execute_daily_tweet(agent_id: str, personality_prompt: str, credential
         logger.error(f"[Agent {agent_id}] Manque des credentials ou personality_prompt pour poster le tweet.")
         return
 
-    # Création des agents CrewAI
     creative_agent = agents_system.creative_tweet_agent()
-    posting_agent = agents_system.tweet_poster_agent(agent_id) # je veux rendre post agen depondre de id agent donc la varible va etre transmit par la classe et entre dans le tool de clette classe 
+    posting_agent = agents_system.tweet_poster_agent(agent_id) 
 
-    # Tâches
     generate_task = GenerateCreativeTweetsTask(agent=creative_agent, personality_prompt=personality_prompt, tweets_text="")
     publish_task = PublishTweetsTask(
         agent=posting_agent,
@@ -373,22 +377,25 @@ async def execute_mentions_reply(agent_id: str, credentials: dict, openai_api_ke
     except Exception as e:
         logger.error(f"[Agent {agent_id}] Erreur lors de l'exécution des réponses aux mentions: {e}")
 
+
 # =======================================================
 # ENDPOINTS
 # =======================================================
 @app.post("/create-agent")
 async def create_agent(req: CreateAgentRequest):
     """
-    Crée un agent d'automatisation Twitter pour un utilisateur.
-    Chaque agent a :
-    1. Un job quotidien pour publier des tweets à une heure aléatoire.
-    2. Un job récurrent toutes les 6 minutes pour répondre aux mentions.
+    Creates a Twitter automation agent for a user.
+    Each agent has:
+    1. A daily job to post tweets at a random time.
+    2. A recurring job every 6 minutes to respond to mentions.
+    3. Updates the Twitter profile bio.
+    4. Posts an initial tweet.
     """
-    # Générer un ID unique pour l'agent
+    # Generate a unique ID for the agent
     agent_id = f"{random.randint(1000, 9999)}"
-    logger.info(f"[Agent {agent_id}] Création d'un nouvel agent avec le prompt de personnalité: '{req.personality_prompt}' et le nom: '{req.name}'")
+    logger.info(f"[Agent {agent_id}] Creating a new agent with personality prompt: '{req.personality_prompt}' and name: '{req.name}'")
      
-    # Stocker les credentials et le prompt de personnalité pour cet agent
+    # Store the credentials and personality prompt for this agent
     credentials = {
         "personality_prompt": req.personality_prompt,
         "TWITTER_API_KEY": req.TWITTER_API_KEY,
@@ -397,42 +404,69 @@ async def create_agent(req: CreateAgentRequest):
         "TWITTER_ACCESS_TOKEN_SECRET": req.TWITTER_ACCESS_TOKEN_SECRET,
         "TWITTER_BEARER_TOKEN": req.TWITTER_BEARER_TOKEN
     }
-    client = tweepy.Client(
-    bearer_token=req.TWITTER_BEARER_TOKEN,
-    consumer_key=req.TWITTER_API_KEY,
-    consumer_secret=req.TWITTER_API_SECRET_KEY,
-    access_token=req.TWITTER_ACCESS_TOKEN,
-    access_token_secret=req.TWITTER_ACCESS_TOKEN_SECRET,
-    wait_on_rate_limit=True,
-)
+    existing_agent = AGENTS_DB.find_by_api_keys(
+        api_key=req.TWITTER_API_KEY,
+        api_secret_key=req.TWITTER_API_SECRET_KEY,
+        access_token=req.TWITTER_ACCESS_TOKEN,
+        access_token_secret=req.TWITTER_ACCESS_TOKEN_SECRET
+    )
+    if existing_agent:
+        logger.warning(f"Agent with the provided API keys already exists: {existing_agent.get('id')}")
+        raise HTTPException(status_code=400, detail="Agent with the provided API keys already exists.")
+    try:
+        client = tweepy.Client(
+            bearer_token=req.TWITTER_BEARER_TOKEN,
+            consumer_key=req.TWITTER_API_KEY,
+            consumer_secret=req.TWITTER_API_SECRET_KEY,
+            access_token=req.TWITTER_ACCESS_TOKEN,
+            access_token_secret=req.TWITTER_ACCESS_TOKEN_SECRET,
+        )
+        client.create_tweet(text=f"🌟 Hello world! This is my first automated tweet for {client.get_me().data.username}, powered by @AgentXHub. Exciting things are on the way! 🚀 #Automation #Tech")
+    except tweepy.TweepyException as e:
+        logger.error(f"[Agent {agent_id}] Error initializing Tweepy client: {e}")
+        raise HTTPException(status_code=500, detail=" Duplicate   agent.")
+
     def get_my_twitter_profile_url() -> str:
-      """
-    Récupère l'URL de profil Twitter du compte authentifié.
+        """
+        Retrieves the Twitter profile URL of the authenticated account.
+        
+        :return: Twitter profile URL or None.
+        """
+          # Initialize OAuthHandler for API v1.1
     
-    :return: URL de profil Twitter.
-      """
-      try:
-        user = client.get_me()
-        if user and user.data:
-            username = user.data.username
-            profile_url = f"https://twitter.com/{username}"
-            print(f"URL du profil Twitter : {profile_url}")
-            return profile_url
-        else:
-            print("Impossible de récupérer les informations de l'utilisateur authentifié.")
+        auth = tweepy.OAuthHandler(
+            consumer_key=req.TWITTER_API_KEY,
+            consumer_secret=req.TWITTER_API_SECRET_KEY
+        )
+        auth.set_access_token(
+            req.TWITTER_ACCESS_TOKEN,
+            req.TWITTER_ACCESS_TOKEN_SECRET
+        )
+        api = tweepy.API(auth)
+        api.update_profile(description=f"🚀 Automated by @AgentXHub | Managing account for {client.get_me().data.username}. Stay tuned for updates! 🤖✨")        
+        try:
+            user = client.get_me()
+            if user and user.data:
+                username = user.data.username
+                profile_url = f"https://twitter.com/{username}"
+                print(f"Twitter profile URL: {profile_url}")
+                return profile_url
+            else:
+                print("Unable to retrieve authenticated user information.")
+                return None
+            
+        except tweepy.TweepyException as e:
+            print(f"Error retrieving user data: {e}")
             return None
-      except tweepy.TweepyException as e:
-        print(f"Erreur lors de la récupération des données utilisateur : {e}")
-        return None
 
-
-    # Obtenir la clé OpenAI globale depuis les variables d'environnement
     global_openai_api_key = os.getenv("OPENAI_API_KEY")
+
 
     AGENTS_DB.insert({
         "agent_id": agent_id,
-        "name": req.name,
-        "url": get_my_twitter_profile_url(),
+        "name": f'@{client.get_me().data.username}',
+        "agent_name": req.name,
+        "twitter_link": get_my_twitter_profile_url(),
         "personality_prompt": req.personality_prompt,
         "TWITTER_API_KEY": req.TWITTER_API_KEY,
         "TWITTER_API_SECRET_KEY": req.TWITTER_API_SECRET_KEY,
@@ -441,17 +475,15 @@ async def create_agent(req: CreateAgentRequest):
         "TWITTER_BEARER_TOKEN": req.TWITTER_BEARER_TOKEN,
         "created_at": datetime.utcnow().isoformat()
     })
-    print(f"[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
-    logger.info(f"[Agent {agent_id}] Credentials et prompt de personnalité stockés dans agents.json.")
+    print(f"[Agent {agent_id}] Credentials and personality prompt stored in agents.json.")
+    logger.info(f"[Agent {agent_id}] Credentials and personality prompt stored in agents.json.")
 
-    # 1. Planifier le tweet quotidien
     try:
         schedule_daily_tweet_job(agent_id, req.personality_prompt, credentials)
     except Exception as e:
-        logger.error(f"[Agent {agent_id}] Erreur lors de la planification du tweet quotidien: {e}")
-        raise HTTPException(status_code=500, detail="Erreur lors de la planification du tweet quotidien.")
+        logger.error(f"[Agent {agent_id}] Error scheduling daily tweet: {e}")
+        raise HTTPException(status_code=500, detail="Error scheduling daily tweet.")
 
-    # 2. Planifier le job récurrent pour répondre aux mentions toutes les 6 minutes
     try:
         mentions_job_id = f"mentions_reply_job_{agent_id}"
         scheduler.add_job(
@@ -462,20 +494,21 @@ async def create_agent(req: CreateAgentRequest):
             replace_existing=False,
             max_instances=1  
         )
-        print(f"[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
-        logger.info(f"[Agent {agent_id}] Job de réponse aux mentions planifié toutes les 6 minutes (Job ID: {mentions_job_id}).")
+        print(f"[Agent {agent_id}] Mentions reply agent (Job ID: {mentions_job_id}).")
+        logger.info(f"[Agent {agent_id}] Mentions reply agent (Job ID: {mentions_job_id}).")
     except Exception as e:
-        logger.error(f"[Agent {agent_id}] Erreur lors de la planification du job de réponses aux mentions: {e}")
-        raise HTTPException(status_code=500, detail="Erreur lors de la planification des réponses aux mentions.")
+        logger.error(f"[Agent {agent_id}] Error scheduling mentions reply job: {e}")
+        raise HTTPException(status_code=500, detail="Error scheduling mentions reply job.")
 
-    logger.info(f"[Agent {agent_id}] Agent créé avec succès.")
+    logger.info(f"[Agent {agent_id}] Agent created successfully.")
     return {
         "agent_id": agent_id,
         "message": (
-            "Agent créé avec succès. "
-            "Tweet quotidien planifié et réponses aux mentions actives toutes les 6 minutes."
+            "Agent created successfully. "
+            "Profile bio updated, initial tweet posted, "
         )
     }
+
 
 @app.get("/")
 async def read_root():
@@ -508,10 +541,13 @@ async def list_agents():
     for agent in agents:
         fields = agent.get("fields", {})
         sanitized_agent = {
-            "agent_id": fields.get("agent_id"),
+            "id": fields.get("agent_id"),
+            "agent_name": fields.get("agent_name"),
+            "twitter_link": fields.get("twitter_link"),
+            "personality": fields.get("personality_prompt"),
             "name": fields.get("name"),
             "personality_prompt": fields.get("personality_prompt"),
-            "created_at": fields.get("created_at")
+         #   "created_at": fields.get("created_at")
         }
         sanitized_agents.append(sanitized_agent)
     logger.debug("Liste des agents récupérée.")
