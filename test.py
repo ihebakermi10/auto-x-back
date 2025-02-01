@@ -1,46 +1,50 @@
 import os
-import tweepy
+import requests
+from requests_oauthlib import OAuth1
+from dotenv import load_dotenv
 
-# Function to extract API credentials from environment variables
-def get_api_credentials():
-    try:
-        api_key = os.environ['TWITTER_API_KEY']
-        api_secret_key = os.environ['TWITTER_API_SECRET_KEY']
-        access_token = os.environ['TWITTER_ACCESS_TOKEN']
-        access_token_secret = os.environ['TWITTER_ACCESS_TOKEN_SECRET']
-        return api_key, api_secret_key, access_token, access_token_secret
-    except KeyError as e:
-        raise KeyError(f"Missing environment variable: {e}")
+# Load environment variables from the .env file
+load_dotenv()
 
-# Function to authenticate with the Twitter API
-def authenticate_twitter(api_key, api_secret_key, access_token, access_token_secret):
-    auth = tweepy.OAuthHandler(api_key, api_secret_key)
-    auth.set_access_token(access_token, access_token_secret)
-    api = tweepy.API(auth)
-    try:
-        api.verify_credentials()
-        print("Authentication successful")
-    except tweepy.TweepError as e:
-        raise Exception(f"Error during authentication: {e}")
-    return api
+# Retrieve Twitter credentials from environment variables
+api_key = os.getenv('TWITTER_API_KEY')
+api_secret_key = os.getenv('TWITTER_API_SECRET_KEY')
+access_token = os.getenv('TWITTER_ACCESS_TOKEN')
+access_token_secret = os.getenv('TWITTER_ACCESS_TOKEN_SECRET')
 
-# Function to update Twitter bio
-def update_twitter_bio(api, new_bio):
-    try:
-        api.update_profile(description=new_bio)
-        print("Twitter bio updated successfully")
-    except tweepy.TweepError as e:
-        raise Exception(f"Error updating bio: {e}")
+# Ensure all credentials are provided
+if not all([api_key, api_secret_key, access_token, access_token_secret]):
+    raise ValueError("Missing one or more Twitter API credentials in the .env file.")
 
-if __name__ == "__main__":
-    # Extract credentials
-    api_key, api_secret_key, access_token, access_token_secret = get_api_credentials()
+# Endpoint to update account settings (v1.1)
+url = 'https://api.twitter.com/1.1/account/settings.json'
 
-    # Authenticate with Twitter
-    api = authenticate_twitter(api_key, api_secret_key, access_token, access_token_secret)
+# OAuth1 authentication setup
+auth = OAuth1(api_key, api_secret_key, access_token, access_token_secret)
 
-    # New bio to set
-    new_bio = "This is my new automated bio."
+# Payload to attempt to set the automated label (this structure is hypothetical)
+payload = {
+    "settings": {
+        "automation": {
+            "managed": True,
+            "managing_account": "@AgentXHub"
+        }
+    }
+}
 
-    # Update bio
-    update_twitter_bio(api, new_bio)
+try:
+    # Send a POST request (Twitter requires GET, HEAD, or POST for this endpoint)
+    response = requests.post(url, json=payload, auth=auth)
+
+    if response.status_code == 200:
+        print("Automated account label applied successfully.")
+    else:
+        print(f"Failed to apply automated account label: {response.status_code}")
+        try:
+            error_data = response.json()
+            print("Error details:", error_data)
+        except ValueError:
+            print("Response:", response.text)
+except requests.RequestException as e:
+    print("An error occurred during the API request:")
+    print(e)

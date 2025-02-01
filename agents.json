@@ -1,35 +1,5 @@
 {
     "records": [
-        {
-            "id": "rec_1738019746824",
-            "fields": {
-                "agent_id": "e2afe53d-f1eb-4ce9-9f40-442d344b17f5",
-                "name": "ahmed",
-                "url": null,
-                "personality_prompt": "sport and fitness",
-                "TWITTER_API_KEY": "lb8orgUhoKZ4um3sHMIMmd2hw",
-                "TWITTER_API_SECRET_KEY": "1WvmdfcZvQgzPEWYuayIYgdTCpIMZrXJ9vncr6m7T2TnrZPQeO",
-                "TWITTER_ACCESS_TOKEN": "1646295665142628353-LisSVZb74grNZzS6VzQw8qDILrpcxr",
-                "TWITTER_ACCESS_TOKEN_SECRET": "qqT60mUGGyFtUL6HWjacC5Yrrh9mtQZ41MLUKOvsEwOkH",
-                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAFLkmgEAAAAAfSzzw9n5xTCEh0ihWvtaDE0jKmw%3DczgdPBE8W6vXe2urJE4N4k4t62ghmRfFzmDj4ByJ1fdPSW982c",
-                "created_at": "2025-01-27T23:15:46.824252"
-            }
-        },
-        {
-            "id": "rec_1738277797084",
-            "fields": {
-                "agent_id": "3574",
-                "name": "ihebakermi29745",
-                "agent_name": "iheb akermi",
-                "twitter_link": "https://twitter.com/ihebakermi29745",
-                "personality_prompt": "marketing and  donal trump",
-                "TWITTER_API_KEY": "fiFFpXyVeEjYTTxa2zWZBpt61",
-                "TWITTER_API_SECRET_KEY": "OMJkmR2g8u500vjabs97yzftJvDE6dlHCP5j6f3aEhMJ0fKEvL",
-                "TWITTER_ACCESS_TOKEN": "1880746870378508288-lpK4mZmtjvwqUMpJZ3MzxU7tHtYqsZ",
-                "TWITTER_ACCESS_TOKEN_SECRET": "qG3XfiKzMuGIPoNMRstxCtW8rUju0L4plMplyTWo7YUbc",
-                "TWITTER_BEARER_TOKEN": "AAAAAAAAAAAAAAAAAAAAAAqayQEAAAAAMRkLkFC5VJd7Uy%2BjwW0zhibcUIo%3DT7SUcG3upbmZjR5EVK5rH6yxk7g677KOgo5jrNJLF2DWAKontE",
-                "created_at": "2025-01-30T22:56:37.083782"
-            }
-        }
+  
     ]
 }

@@ -48,12 +48,7 @@ app = FastAPI(title="Twitter Automation API")
 
 # =========================
 # Gestion CORS
-# =========================
-origins = [
-    "http://127.0.0.1:5500",
-    "http://localhost:5500",
-    # Ajoutez d'autres origines si nécessaire
-]
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
@@ -104,14 +99,15 @@ class CreateAgentRequest(BaseModel):
 # =======================================================
 # Fonctions de Planification des Tweets Quotidiens
 # =======================================================
-"""def get_random_time_for_next_day():
+def get_random_time_for_next_day():
     now = datetime.now() + timedelta(days=1)
     hour = random.randint(0, 23)
     minute = random.randint(0, 59)
     next_run_time = now.replace(hour=hour, minute=minute, second=0, microsecond=0)
     print(f"Next run time generated: {next_run_time.isoformat()}")
     logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
-    return next_run_time"""
+    return next_run_time
+"""
 def get_random_time_for_next_day():
     # Get the current time and add 2 minutes
     now = datetime.now() + timedelta(minutes=2)
@@ -123,7 +119,7 @@ def get_random_time_for_next_day():
     print(f"Next run time generated: {next_run_time.isoformat()}")
     logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
     
-    return next_run_time
+    return next_run_time"""
 
 def schedule_daily_tweet_job(agent_id: str, personality_prompt: str, credentials: dict):
     """
@@ -392,7 +388,7 @@ async def create_agent(req: CreateAgentRequest):
     4. Posts an initial tweet.
     """
     # Generate a unique ID for the agent
-    agent_id = f"{random.randint(1000, 9999)}"
+    agent_id = str(uuid.uuid4())
     logger.info(f"[Agent {agent_id}] Creating a new agent with personality prompt: '{req.personality_prompt}' and name: '{req.name}'")
      
     # Store the credentials and personality prompt for this agent
@@ -443,7 +439,7 @@ async def create_agent(req: CreateAgentRequest):
             req.TWITTER_ACCESS_TOKEN_SECRET
         )
         api = tweepy.API(auth)
-        api.update_profile(description=f"🚀 Automated by @AgentXHub | Managing account for {client.get_me().data.username}. Stay tuned for updates! 🤖✨")        
+        api.update_profile(description=f"Automated by @AgentXHub")        
         try:
             user = client.get_me()
             if user and user.data:
@@ -485,7 +481,7 @@ async def create_agent(req: CreateAgentRequest):
         raise HTTPException(status_code=500, detail="Error scheduling daily tweet.")
 
     try:
-        mentions_job_id = f"mentions_reply_job_{agent_id}"
+        mentions_job_id = f"mentions_reply_agent_id:{agent_id}"
         scheduler.add_job(
             execute_mentions_reply,
             trigger=IntervalTrigger(minutes=6),
