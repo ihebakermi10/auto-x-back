@@ -107,17 +107,17 @@ def get_random_time_for_next_day():
     print(f"Next run time generated: {next_run_time.isoformat()}")
     logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
     return next_run_time
-"""
-def get_random_time_for_next_day():
-    # Get the current time and add 2 minutes
+
+"""def get_random_time_for_next_day():
+  
     now = datetime.now() + timedelta(minutes=2)
     
     # Replace seconds and microseconds to ensure precise timing
-    next_run_time = now.replace(second=0, microsecond=0)
+    next_run_time = now.replace(second=3, microsecond=5)
     
     # Log the next run time for debugging
-    print(f"Next run time generated: {next_run_time.isoformat()}")
-    logger.debug(f"Next run time generated: {next_run_time.isoformat()}")
+    print(f"Agent's next run time generated is: {next_run_time.isoformat()}")
+    logger.debug(f"Agent's next run time generated is: {next_run_time.isoformat()}")
     
     return next_run_time"""
 
@@ -134,7 +134,7 @@ def schedule_daily_tweet_job(agent_id: str, personality_prompt: str, credentials
         id=job_id,
         replace_existing=True
     )
-    logger.info(f"[Agent {agent_id}] Job 'daily_tweet_job' planifié pour {next_run_time.isoformat()} UTC")
+    logger.info(f"[Agent {agent_id}]   planifié pour {next_run_time.isoformat()} UTC")
 
 async def execute_daily_tweet(agent_id: str, personality_prompt: str, credentials: dict):
     """
@@ -213,7 +213,7 @@ class TwitterReplyBot:
 
         if self.openai_api_key:
             self.llm = ChatOpenAI(
-                temperature=0.2,
+                temperature=0.1,
                 openai_api_key=self.openai_api_key,
                 model_name='gpt-4o-mini-2024-07-18'  # Assurez-vous que ce modèle est disponible
             )
@@ -241,25 +241,28 @@ class TwitterReplyBot:
             return "Désolé, je ne peux pas répondre sans une clé OpenAI."
 
         system_template = """
-            You are an incredibly wise and smart tech mad scientist from Silicon Valley.
-            Your goal is to give a concise prediction in response to a piece of text from the user.
+            You are an expert in posts and discussions related to Donald Trump.
+            Your goal is to respond to any message based on your understanding, with relevance and impact.
 
             % RESPONSE TONE:
 
-            - Your prediction should be given in an active voice and be opinionated
-            - Your tone should be serious with a hint of wit and sarcasm
+            - Your response should be direct, confident, and engaging
+            - You may use wit, sarcasm, or humor when appropriate
+            - Maintain a serious and analytical tone for political or factual discussions
 
             % RESPONSE FORMAT:
 
-            - Respond in under 200 characters
-            - Respond in two or less short sentences
-            - Do not respond with emojis
+            - Keep responses concise, ideally under 200 characters
+            - Limit responses to two short sentences at most
+            - Do not use emojis
 
             % RESPONSE CONTENT:
 
-            - Include specific examples of old tech if they are relevant
-            - If you don't have an answer, say, "Sorry, my magic 8 ball isn't working right now 🔮"
+            - Reference Trump's decisions, policies, or statements when relevant
+            - If the message is vague, ask a thought-provoking question
+            - If you don’t have a clear answer, say: "I'll let history be the judge of that."
         """
+
         system_message_prompt = SystemMessagePromptTemplate.from_template(system_template)
         human_message_prompt = HumanMessagePromptTemplate.from_template("{text}")
 
@@ -363,7 +366,7 @@ async def execute_mentions_reply(agent_id: str, credentials: dict, openai_api_ke
     """
     Fonction exécutée toutes les 6 minutes pour répondre aux mentions.
     """
-    logger.info(f"[Agent {agent_id}] Exécution du job de réponse aux mentions à {datetime.utcnow().isoformat()} UTC")
+    logger.info(f"[Agent {agent_id}]  réponse aux mentions à {datetime.utcnow().isoformat()} UTC")
 
     try:
         bot = TwitterReplyBot(agent_id, credentials, openai_api_key=openai_api_key)
@@ -439,7 +442,9 @@ async def create_agent(req: CreateAgentRequest):
             req.TWITTER_ACCESS_TOKEN_SECRET
         )
         api = tweepy.API(auth)
-        api.update_profile(description=f"Automated by @AgentXHub")        
+        api.update_profile(description=f"Automated by @AgentXHub")
+        api.update_profile(name=req.name)
+        
         try:
             user = client.get_me()
             if user and user.data:
@@ -481,19 +486,19 @@ async def create_agent(req: CreateAgentRequest):
         raise HTTPException(status_code=500, detail="Error scheduling daily tweet.")
 
     try:
-        mentions_job_id = f"mentions_reply_agent_id:{agent_id}"
+        mentions_job_id = f"mentions_agent_id:{agent_id}"
         scheduler.add_job(
             execute_mentions_reply,
-            trigger=IntervalTrigger(minutes=6),
+            trigger=IntervalTrigger(minutes=10),
             args=[agent_id, credentials, global_openai_api_key],
             id=mentions_job_id,
             replace_existing=False,
             max_instances=1  
         )
-        print(f"[Agent {agent_id}] Mentions reply agent (Job ID: {mentions_job_id}).")
-        logger.info(f"[Agent {agent_id}] Mentions reply agent (Job ID: {mentions_job_id}).")
+        print(f"[Agent {agent_id}] Mentions  agent ( ID: {mentions_job_id}).")
+        logger.info(f"[Agent {agent_id}] Mentions  agent ( ID: {mentions_job_id}).")
     except Exception as e:
-        logger.error(f"[Agent {agent_id}] Error scheduling mentions reply job: {e}")
+        logger.error(f"[Agent {agent_id}] Error scheduling mentions r: {e}")
         raise HTTPException(status_code=500, detail="Error scheduling mentions reply job.")
 
     logger.info(f"[Agent {agent_id}] Agent created successfully.")

@@ -1,0 +1,15 @@
+{
+    "records": [
+        {
+            "id": "rec_1738447161058",
+            "fields": {
+                "mentioned_conversation_tweet_id": "1885793629995708745",
+                "mentioned_conversation_tweet_text": "https://t.co/YptnshrF6E",
+                "tweet_response_id": "1885810186826248550",
+                "tweet_response_text": "Sorry, my magic 8 ball isn't working right now.",
+                "tweet_response_created_at": "2025-02-01T21:59:21.058919",
+                "mentioned_at": "2025-02-01T21:58:42+00:00"
+            }
+        }
+    ]
+}
