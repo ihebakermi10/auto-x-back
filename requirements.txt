@@ -16,4 +16,5 @@ uvicorn
 pydantic 
 python-dotenv 
 apscheduler 
-tweepy 
+tweepy
+pymongo 

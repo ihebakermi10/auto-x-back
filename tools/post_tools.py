@@ -1,17 +1,16 @@
 # tools/post_tools.py
 
 import tweepy
-import json
-from json import JSONDecodeError
-from crewai.tools import tool
-from agents_db import AgentsDatabase
 import re
+from crewai.tools import tool
+from db import AgentsDatabase  # Importation de la classe configurée pour MongoDB
+
 def make_post_tweet_tool(agent_id: str):
     """
     Fabrique et retourne une fonction 'post_tweet' décorée par @tool,
     qui s'appuie sur le client Tweepy configuré pour l'agent_id spécifié.
     """
-    db = AgentsDatabase("agents.json")
+    db = AgentsDatabase()  # Utilisation de MongoDB (pas de fichier local)
     record = None
     for rec in db.get_all():
         fields = rec.get("fields", {})
@@ -38,7 +37,8 @@ def make_post_tweet_tool(agent_id: str):
             consumer_secret=api_secret_key,
             access_token=access_token,
             access_token_secret=access_token_secret,
-            wait_on_rate_limit=True )
+            wait_on_rate_limit=True
+        )
     except Exception as e:
         raise ValueError(f"Impossible de configurer Tweepy pour l'agent {agent_id}. Erreur: {str(e)}")
 
@@ -56,7 +56,7 @@ def make_post_tweet_tool(agent_id: str):
         if not tweet_text:
             return "Erreur: aucun texte de tweet fourni."
 
-        # Tentative de décodage JSON pour convertir les séquences \ud83d\udcc8 etc. en emojis
+        # Suppression des séquences Unicode (par exemple, \ud83d\udcc8) pour nettoyer le texte
         tweet_text_clean = re.sub(r'\\u[a-fA-F0-9]{4}', '', tweet_text)
 
         try:
