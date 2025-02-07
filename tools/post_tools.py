@@ -37,7 +37,6 @@ def make_post_tweet_tool(agent_id: str):
             consumer_secret=api_secret_key,
             access_token=access_token,
             access_token_secret=access_token_secret,
-            wait_on_rate_limit=True
         )
     except Exception as e:
         raise ValueError(f"Impossible de configurer Tweepy pour l'agent {agent_id}. Erreur: {str(e)}")
